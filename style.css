@@ -161,3 +161,20 @@ navbar.logo {
     padding-top: 20px;
 
 }
+
+.deleteProduct {
+    cursor: pointer;
+}
+
+.cantidad-Shop {
+    background-color: #f01313;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 12px;
+    padding: 2px;
+    top: 20px;
+    right: 14px;
+    position: absolute;
+    display: none;
+
+}

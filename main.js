@@ -1,56 +1,11 @@
 const shopContent = document.getElementById("shopContent");
 const verCarrito = document.getElementById("verCarrito");
 const popContainer = document.getElementById("pop-container");
-
-const productos = [
-  {
-    id: 1,
-    nombre: "IT",
-    precio: 2000,
-    img: "./asset/img/IT.jpg",
-  },
-  {
-    id: 2,
-    nombre:"Actividad Paranormal",
-    precio: 2500,
-    img: './asset/img/Actividad Paranormal.jpg',
-},
-
-{
-    id: 3,
-    nombre:"Cementerio de Animales",
-    precio: 3500,
-    img: './asset/img/Cementerio de Animales.jpg',
-},
-{
-    id: 5,
-    nombre:"El juego del miedo",
-    precio: 1500,
-    img: './asset/img/El juego del miedo.jpg',
-},
-{
-    id: 6,
-    nombre:"La bruja de blair",
-    precio: 2000,
-    img: './asset/img/La bruja de blair.jpg',
-},
-{
-    id: 7,
-    nombre:"Los extraños",
-    precio: 4000,
-    img: './asset/img/Los extraños.jpg',
-},
-{
-    id: 8,
-    nombre:"Psicosis",
-    precio: 3500,
-    img: './asset/img/Psicosis.jpg',
-},
-];
+const cantidadShop = document.getElementById("cantidadShop");
 
 let carrito = [];
 
-function renderizarProductos() {
+
   productos.forEach((product) => {
     const content = document.createElement("div");
     content.className = "card";
@@ -58,6 +13,7 @@ function renderizarProductos() {
       <img src="${product.img}">
       <h3>${product.nombre}</h3>
       <p class="price">${product.precio} $</p>
+      
     `;
 
     shopContent.append(content);
@@ -65,33 +21,45 @@ function renderizarProductos() {
     const comprar = document.createElement("button");
     comprar.innerText = "comprar";
     comprar.className = "comprar";
+
     content.append(comprar);
 
     comprar.addEventListener("click", () => {
-      agregarAlCarrito(product);
-    });
-  });
-}
+    const repeat = carrito.some((repeatProduct) => repeatProduct.id === product.id); 
+    console.log(repeat);
 
-function agregarAlCarrito(producto) {
-  carrito.push({
-    id: producto.id,
-    img: producto.img,
-    nombre: producto.nombre,
-    precio: producto.precio,
+    if (repeat == true){
+      carrito.map((produ) => {
+        if(produ.id === product.id){
+          produ.cantidad++;
+        }
+      });
+    } else {
+      carrito.push({
+        id: product.id,
+        img: product.img,
+        nombre: product.nombre,
+        precio: product.precio,
+        cantidad: product.cantidad,
   });
-  console.log(carrito);
+    }
+        
+    console.log(carrito);
+    carritoContador ();
+  });
+});
+ 
+
   guardarCarritoEnLocalStorage();
-}
+
 
 function guardarCarritoEnLocalStorage() {
   localStorage.setItem("carrito", JSON.stringify(carrito));
 }
 
-function mostrarCarrito() {
+ const pintarCarrito = () => {
   popContainer.innerHTML = "";
   popContainer.style.display = "flex";
-
   const popHeader = document.createElement("div");
   popHeader.className = "pop-header";
   popHeader.innerHTML = `
@@ -110,23 +78,49 @@ function mostrarCarrito() {
   popHeader.append(popButton);
 
   carrito.forEach((product) => {
-    const carritoContent = document.createElement("div");
+    let carritoContent = document.createElement("div");
     carritoContent.className = "modal-content";
     carritoContent.innerHTML = `
       <img src="${product.img}">
       <h3>${product.nombre}</h3>
       <p>${product.precio}</p>
+      <p>Cantidad: ${product.cantidad}</p>
     `;
     popContainer.append(carritoContent);
+    console.log(carrito.length);
+
+    let eliminar = document.createElement ("span");
+    eliminar.innerText = "❎";
+    eliminar.className ="deleteProduct";
+    carritoContent.append(eliminar);
+
+    eliminar.addEventListener("click", eliminarProducto);
+
   });
+
+
 
   const total = carrito.reduce((acc, el) => acc + el.precio, 0);
   const totalShopping = document.createElement("div");
   totalShopping.className = "total-shopping";
   totalShopping.innerHTML = `total a pagar: ${total} $`;
   popContainer.append(totalShopping);
+};
+
+verCarrito.addEventListener ("click", pintarCarrito);
+
+const eliminarProducto = () => {
+  const foundId = carrito.find((element) => element.id);
+  carrito = carrito.filter((carritoId) => {
+    return carritoId !== foundId;
+  });
+  carritoContador ();
+  pintarCarrito();
+};
+
+const carritoContador = () => {
+  cantidadShop.style.display = "block",
+  cantidadShop.innerText = carrito.length;
 }
 
-verCarrito.addEventListener("click", mostrarCarrito);
 
-renderizarProductos();
