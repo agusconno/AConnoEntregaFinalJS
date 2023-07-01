@@ -3,7 +3,7 @@ const verCarrito = document.getElementById("verCarrito");
 const popContainer = document.getElementById("pop-container");
 const cantidadShop = document.getElementById("cantidadShop");
 
-let carrito = [];
+let carrito = JSON.parse(localStorage.getItem("carroCompras")) || [];
 
 
   productos.forEach((product) => {
@@ -42,20 +42,14 @@ let carrito = [];
         precio: product.precio,
         cantidad: product.cantidad,
   });
-    }
-        
+    }    
     console.log(carrito);
-    carritoContador ();
+    console.log(carrito.length);
+    carritoContador();
+    local();
   });
 });
  
-
-  guardarCarritoEnLocalStorage();
-
-
-function guardarCarritoEnLocalStorage() {
-  localStorage.setItem("carrito", JSON.stringify(carrito));
-}
 
  const pintarCarrito = () => {
   popContainer.innerHTML = "";
@@ -87,7 +81,7 @@ function guardarCarritoEnLocalStorage() {
       <p>Cantidad: ${product.cantidad}</p>
     `;
     popContainer.append(carritoContent);
-    console.log(carrito.length);
+    
 
     let eliminar = document.createElement ("span");
     eliminar.innerText = "❎";
@@ -97,8 +91,6 @@ function guardarCarritoEnLocalStorage() {
     eliminar.addEventListener("click", eliminarProducto);
 
   });
-
-
 
   const total = carrito.reduce((acc, el) => acc + el.precio, 0);
   const totalShopping = document.createElement("div");
@@ -115,12 +107,25 @@ const eliminarProducto = () => {
     return carritoId !== foundId;
   });
   carritoContador ();
+  local ();
   pintarCarrito();
 };
 
 const carritoContador = () => {
-  cantidadShop.style.display = "block",
+  cantidadShop.style.display = "block";
+  const carritoLenght = carrito.length;
+  localStorage.setItem("carritoLenght", JSON.stringify(carritoLenght))
   cantidadShop.innerText = carrito.length;
+  cantidadShop.innerText = JSON.parse(localStorage.getItem("carritoLenght")); 
 }
+
+carritoContador();
+
+const local = () => {
+  localStorage.setItem("carroCompras", JSON.stringify(carrito))
+}
+
+
+
 
 
