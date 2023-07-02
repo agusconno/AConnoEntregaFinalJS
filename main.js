@@ -5,8 +5,11 @@ const cantidadShop = document.getElementById("cantidadShop");
 
 let carrito = JSON.parse(localStorage.getItem("carroCompras")) || [];
 
-
-  productos.forEach((product) => {
+const getProducts = async () =>{
+  const response = await fetch("data.json");
+  const data = await response.json();
+  console.log(data);
+  data.forEach((product) => {
     const content = document.createElement("div");
     content.className = "card";
     content.innerHTML = `
@@ -49,6 +52,11 @@ let carrito = JSON.parse(localStorage.getItem("carroCompras")) || [];
     local();
   });
 });
+};
+
+getProducts();
+
+  
  
 
  const pintarCarrito = () => {
